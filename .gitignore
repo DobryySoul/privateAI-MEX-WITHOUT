@@ -1,0 +1,39 @@
+# Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment folder (assuming it's named venv)
+
+.venv/
+venv/
+env/
+
+# PyCharm project files
+.idea/
+
+# Log files
+*.log
+*.log.*
+logs/
+**/logs/
+**/log/
+log/
+
+# Config and secrets
+*.session
+*.session-journal
+
+# Temporary or downloaded files
+*.temp
+
+# Mako compiled templates
+*.mako.py
+
+# General temporary files
+*.swp
+*.bak
+*.tmp
+*.DS_Store
+*.local.yaml
