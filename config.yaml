@@ -24,7 +24,7 @@ OPENAI_API:
 
 SPEECH_API:
   api_key: 'MnzvMRRjyZSdWZT15-Tx6bzbq3x7rqo1ZmklU54nbrg='
-  voice_id: 'cf8619a0-bed5-4ea5-8a5a-28fbbf24b9f2'
+  voice_id: 'c3f75143-9334-45a9-a596-a0cf39720b3b'
   model: 'simba-multilingual'
   language: 'es-ES'
 
