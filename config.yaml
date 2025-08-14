@@ -35,7 +35,7 @@ TECHNICAL_DATA:
   to_group_messages_delay_low: 15 # delay time to group multiple messages low limit
   to_group_messages_delay_high: 25  # high limit
   stop_responding: 500  # after this number of messages the bot will stop responding to user
-  time_zone: 'America/Mexiko'
+  time_zone: 'America/Mexico_City'
   download_path: 'assets/downloads/'
   stop_phrase: '👍👍'
   start_phrase: '👍'
