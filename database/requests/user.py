@@ -46,7 +46,7 @@ async def get_user(session: AsyncSession, user_id: int) -> User:
 async def set_payment_data_for_user(session: AsyncSession, user_id: int, bot_message: str):
     logger.debug(f'Starting set_payment_data_for_user with user_id={user_id}')
 
-    if '{payment_data}' not in bot_message.lower():
+    if '{payment_data}' not in bot_message.lower() and '{payment_cash}' not in bot_message.lower():
         return bot_message, None
 
     logger.debug('Payment data placeholder detected in bot_reply')
@@ -71,11 +71,23 @@ async def set_payment_data_for_user(session: AsyncSession, user_id: int, bot_mes
 
     bot_message = bot_message.replace('{{payment_data}}', f"""
 
-    Banco :  {user.data_one}
+    {user.data_one}
 
-    Nombre: {user.data_name}
+    NOMBRE: {user.data_name}
 
-    Número de cuenta : {user.data_two}
+    CLABE: {user.data_two}
+
+    Сoncepto: {user.data_three}
+
+    """)
+
+    bot_message = bot_message.replace('{{payment_cash}}', f"""
+
+    {user.data_one}
+
+    NOMBRE: {user.data_name}
+
+    Número de tarjeta: {user.data_two}
 
     """)
 

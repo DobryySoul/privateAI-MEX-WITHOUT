@@ -79,13 +79,12 @@ async def send_combined_message(client: telethon.TelegramClient, session: AsyncS
     logger.info('send_combined_message function completed successfully')
 
 async def send_text_message(client: telethon.TelegramClient, session: AsyncSession, recipient_id: int, user_message: str, bot_message: str):
-    is_payment_message = '{{payment_data}}' in bot_message.lower()
+    is_payment_message = '{{payment_data}}' in bot_message.lower() or '{{payment_cash}}' in bot_message.lower()
     # Update bot_reply with payment data if necessary
     bot_message, data_photo = await set_payment_data_for_user(session, recipient_id, bot_message)
 
     if is_payment_message:
         try:
-            # Move chat to "wait_payment_folder_name" folder
             await move_chat_to_folder_include_peers(client, recipient_id, config.TECHNICAL_DATA.wait_payment_folder_name)
             logger.info(f"Successfully attempted to move user {recipient_id} to '{config.TECHNICAL_DATA.wait_payment_folder_name}' folder.")
         except Exception as e:
@@ -100,7 +99,7 @@ async def send_text_message(client: telethon.TelegramClient, session: AsyncSessi
         finally:
             os.remove(tmp_path)
 
-    if '{{payment_data}}' in bot_message:
+    if is_payment_message:
         await client.send_message(get_bot_id(), f'Dialogue: {recipient_id}, {bot_message}. Contact administrator!')
 
     # Log the message being added to the user

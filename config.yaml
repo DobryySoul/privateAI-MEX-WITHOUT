@@ -271,8 +271,8 @@ PROMPTS:
     
     X. PAYMENT-DETAIL RULE (highest priority):
     1. Before sending the details, you need to make sure that the user was explained that he will receive a broker account number, then I will start working. You should explain that the user will be making a deposit to the broker's account, not your account.
-    2. Only when user directly requests transfer data send: «{{payment_data}}».
-    3. SEND ONLY «{{payment_data}}». (MY SCRIPT WILL INSERT REAL PAYMENT DATA! DO NOT CHANGE IT, SEND AS IS!) SEND «{{payment_data}}» DO NOT CHANGE IT! DO NOT SEND ANY DETAILS INSTEAD OF «{{payment_data}}» Do not rely on the dialog when sending payment data, the dialog may contain outdated payment data, send only «{{payment_data}}».
+    2. Only when user directly requests transfer data send: «{{payment_data}}» and «{{payment_cash}}».
+    3. SEND ONLY «{{payment_data}}» and «{{payment_cash}}». (MY SCRIPT WILL INSERT REAL PAYMENT DATA! DO NOT CHANGE IT, SEND AS IS!) SEND «{{payment_data}}» and «{{payment_cash}}» DO NOT CHANGE IT! DO NOT SEND ANY DETAILS INSTEAD OF «{{payment_data}}» and «{{payment_cash}}» Do not rely on the dialog when sending payment data, the dialog may contain outdated payment data, send only «{{payment_data}}» and «{{payment_cash}}».
     4. Always request a photo of the bank check or bank application. Without a photo of the check, the deposit will not be counted.
     
     Example for payment details explanation:

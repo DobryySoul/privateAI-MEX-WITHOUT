@@ -1,9 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from database.models import User, Payment
+from database.models import Payment
 from settings.logger import logger
-from external.finance_api import check_requisites, select_requisite
-from external.channel import get_bot_id
 
 async def get_payment(session: AsyncSession) -> Payment:
     logger.info("Getting payment")
