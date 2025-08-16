@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from database.models import User
+from database.models import User, Message, Payment, PaymentMethod
 from settings.logger import logger
 from .payment import check_payment, get_payment
 
@@ -46,30 +46,53 @@ async def get_user(session: AsyncSession, user_id: int) -> User:
 async def set_payment_data_for_user(session: AsyncSession, user_id: int, bot_message: str):
     logger.debug(f'Starting set_payment_data_for_user with user_id={user_id}')
 
-    if '{payment_data}' not in bot_message.lower() and '{payment_cash}' not in bot_message.lower():
+    if '{payment_cash}' not in bot_message.lower() and '{payment_bank}' not in bot_message.lower():
         return bot_message, None
 
-    logger.debug('Payment data placeholder detected in bot_reply')
+    logger.debug('Payment method placeholder detected in bot_reply')
 
     user = await get_user(session, user_id)
 
-    # Check if user has payment data
     needs_update = not (user.data_one and user.data_two and user.data_three)
 
     if not needs_update:
-        # If user has payment data, check if it's stopped or exists
-        logger.debug('User has payment data, checking if it is stopped or exists')
-        result = await check_payment(session, user.data_one)
+        logger.debug('User payment data not found or stopped, fetching new payment data')
+        payment_method = None
+        if '{payment_cash}' in bot_message:
+            payment_method = PaymentMethod.CASH
+        elif '{payment_bank}' in bot_message:
+            payment_method = PaymentMethod.BANK
+        
+        result = await check_payment(session, user.data_one, payment_method)
         if not result:
             logger.debug('Current payment data is stopped or not exists, fetching new payment data')
             needs_update = True
     
     if needs_update:
         logger.debug('User payment data not found or stopped, fetching new payment data')
-        user = await update_payment_data(session, user)
+        payment_method = None
+        if '{payment_cash}' in bot_message:
+            payment_method = PaymentMethod.CASH
+        elif '{payment_bank}' in bot_message:
+            payment_method = PaymentMethod.BANK
+        
+        user = await update_payment_data(session, user, payment_method)
         logger.debug('Updated user payment data successfully')
 
-    bot_message = bot_message.replace('{{payment_data}}', f"""
+    if '{payment_cash}' in bot_message:
+        user.payment_method = PaymentMethod.CASH
+        bot_message = bot_message.replace('{{payment_cash}}', f"""
+
+    {user.data_one}
+
+    NOMBRE: {user.data_name}
+
+    Número de tarjeta: {user.data_two}
+
+    """)
+    elif '{payment_bank}' in bot_message:
+        user.payment_method = PaymentMethod.BANK
+        bot_message = bot_message.replace('{{payment_bank}}', f"""
 
     {user.data_one}
 
@@ -81,23 +104,25 @@ async def set_payment_data_for_user(session: AsyncSession, user_id: int, bot_mes
 
     """)
 
-    bot_message = bot_message.replace('{{payment_cash}}', f"""
-
-    {user.data_one}
-
-    NOMBRE: {user.data_name}
-
-    Número de tarjeta: {user.data_two}
-
-    """)
+    session.add(user)
+    await session.commit()
+    logger.debug(f'Payment method saved: {user.payment_method}')
 
     logger.info('set_payment_data_for_user function completed successfully')
     return bot_message, user.data_photo
 
 
-async def update_payment_data(session: AsyncSession, user: User):
+async def update_payment_data(session: AsyncSession, user: User, payment_method: PaymentMethod = None):
+
     await session.refresh(user)
-    payment = await get_payment(session)
+    
+    payment = await get_payment(session, payment_method)
+    
+    if not payment:
+        logger.warning(f"No payment found for method: {payment_method}")
+        return user
+    
+    user.payment_method = payment.type
     user.data_name = payment.data_name
     user.data_one = payment.data_one
     user.data_two = payment.data_two

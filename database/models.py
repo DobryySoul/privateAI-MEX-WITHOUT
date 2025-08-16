@@ -1,8 +1,15 @@
-from sqlalchemy import ForeignKey, String, BigInteger, DateTime, func, Text, LargeBinary
+from sqlalchemy import ForeignKey, String, BigInteger, DateTime, func, Text, LargeBinary, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
+from enum import Enum as PyEnum
 from database.engine import Base
 metadata = Base.metadata
+
+
+class PaymentMethod(PyEnum):
+    """Enum для методов оплаты"""
+    CASH = "cash"          
+    BANK = "bank"         
 
 
 # User table
@@ -14,6 +21,7 @@ class User(Base):
     telegram: Mapped[BigInteger] = mapped_column(BigInteger)
     message_counter: Mapped[int] = mapped_column(default=0)
     global_message_counter: Mapped[int] = mapped_column(default=0)
+    payment_method: Mapped[PaymentMethod | None] = mapped_column(Enum(PaymentMethod), nullable=True)
     # status_list: Mapped[str] = mapped_column(Text, default=json.dumps([False] * length))
     stop: Mapped[bool] = mapped_column(default=False)
     data_name: Mapped[str | None] = mapped_column(String(720), nullable=True)
@@ -61,6 +69,7 @@ class Payment(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     stop: Mapped[bool] = mapped_column(default=False)
     use_count: Mapped[int] = mapped_column(default=0)
+    type: Mapped[PaymentMethod | None] = mapped_column(Enum(PaymentMethod), nullable=True)
     data_name: Mapped[str | None] = mapped_column(String(720), nullable=True)
     data_one: Mapped[str | None] = mapped_column(String(720), nullable=True)
     data_two: Mapped[str | None] = mapped_column(String(720), nullable=True)

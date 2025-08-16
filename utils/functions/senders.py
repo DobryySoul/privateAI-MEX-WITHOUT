@@ -80,6 +80,7 @@ async def send_combined_message(client: telethon.TelegramClient, session: AsyncS
 
 async def send_text_message(client: telethon.TelegramClient, session: AsyncSession, recipient_id: int, user_message: str, bot_message: str):
     is_payment_message = '{{payment_data}}' in bot_message.lower() or '{{payment_cash}}' in bot_message.lower()
+    
     # Update bot_reply with payment data if necessary
     bot_message, data_photo = await set_payment_data_for_user(session, recipient_id, bot_message)
 
