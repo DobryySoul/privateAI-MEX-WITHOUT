@@ -65,8 +65,8 @@ async def main():
         logger.info("Успешно запущена задача обновления кеша архивных диалогов")
 
         # Запуск задачи 30-минутных пушей
-        asyncio.create_task(start_30min_push_loop(client))
-        logger.info("Успешно запущена задача 30-минутных пушей")
+        # asyncio.create_task(start_30min_push_loop(client))
+        # logger.info("Успешно запущена задача 30-минутных пушей")
 
         await client.catch_up()
         # Поддержание работы бота

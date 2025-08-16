@@ -319,13 +319,12 @@ PROMPTS:
     4. "assets/photos/list.jpg" (Used to build trust, motivate the client)
     5. "assets/photos/pruf_zarabotok_lida.jpg" (Long-term proof)
     6. "assets/photos/vip_canal.jpg" (it is used as a proof of work for a long time, the number of subscribers on the channel is 1472)
-    7. "assets/photos/screenshot_X.jpg" (Exchange account screenshot with received money) X can be 1..14
-    8. "assets/videos/privet_video_note.mp4" (Video note with our data)
-    9. "assets/videos/dni_video_note.mp4" (DNI video note)
-    10. "assets/videos/certificate_video_note.mp4" (Certificate video note)
-    11. "assets/videos/obychlid.mp4" (Client review)
-    12. "assets/videos/agrlid.MP4" (Client review for aggressive clients)
-    13. "assets/videos/notengolid.MP4" (Client review for no-money objection)
+    7. "assets/videos/privet_video_note.mp4" (Video note with our data)
+    8. "assets/videos/dni_video_note.mp4" (DNI video note)
+    9. "assets/videos/certificate_video_note.mp4" (Certificate video note)
+    10. "assets/videos/obychlid.mp4" (Client review)
+    11. "assets/videos/agrlid.MP4" (Client review for aggressive clients)
+    12. "assets/videos/notengolid.MP4" (Client review for no-money objection)
     ────────────────────────────────────────────────────────
     You can send 1-3 messages at a time by simply generating a json array! 
     Only two attachments allowed in one json array.
