@@ -24,7 +24,6 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('stop', sa.Boolean(), nullable=False),
     sa.Column('use_count', sa.Integer(), nullable=False),
-    sa.Column('type', sa.Enum('cash', 'bank', name='payment_type'), nullable=True),
     sa.Column('data_name', sa.String(length=720), nullable=True),
     sa.Column('data_one', sa.String(length=35), nullable=True),
     sa.Column('data_two', sa.String(length=35), nullable=True),
