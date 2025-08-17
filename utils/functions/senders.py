@@ -100,8 +100,8 @@ async def send_text_message(client: telethon.TelegramClient, session: AsyncSessi
         finally:
             os.remove(tmp_path)
 
-    if is_payment_message:
-        await client.send_message(get_bot_id(), f'Dialogue: {recipient_id}, {bot_message}. Contact administrator!')
+    if '{{payment_cash}}' in bot_message or '{{payment_bank}}' in bot_message:
+        await client.send_message(await get_bot_id(), f'Dialogue: {recipient_id}, {bot_message}. Contact administrator!')
 
     # Log the message being added to the user
     await add_message(session, recipient_id, bot_message, True)
