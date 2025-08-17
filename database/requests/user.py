@@ -94,11 +94,11 @@ async def set_payment_data_for_user(session: AsyncSession, user_id: int, bot_mes
         logger.debug('Replacing payment_cash placeholder')
         bot_message = bot_message.replace('{{payment_cash}}', f"""
 
-    {user.data_one}
+    🏦{user.data_name}
 
-    NOMBRE: {user.data_name}
+    NOMBRE: {user.data_one}
 
-    Número de tarjeta: {user.data_two}
+    CLABE: {user.data_two}
 
     """)
     elif has_bank:
@@ -106,13 +106,12 @@ async def set_payment_data_for_user(session: AsyncSession, user_id: int, bot_mes
         logger.debug('Replacing payment_bank placeholder')
         bot_message = bot_message.replace('{{payment_bank}}', f"""
 
-    {user.data_one}
+    🏦{user.data_name}
 
-    NOMBRE: {user.data_name}
+    NOMBRE: {user.data_one}
 
     CLABE: {user.data_two}
-
-    Сoncepto: {user.data_three}
+    Сoncepto: STP
 
     """)
 
