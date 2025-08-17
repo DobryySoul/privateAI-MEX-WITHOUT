@@ -6,12 +6,11 @@ from handlers.common import common_handler
 from settings.config import config
 from settings.logger import logger
 from utils.functions.prompt import recognize_image
-from utils.functions.senders import forward_media_to_favorites
 from utils.functions.fetchers import check_sensitive_data
 from external.channel import get_bot_id
 from utils.check_fd import is_fd
 from telethon.events import StopPropagation
-from utils.functions.telegram_client_helpers import move_chat_to_folder_include_peers
+from utils.functions.telegram_client_helpers import move_chat_to_folder_include_peers, forward_document_to_chat
 from database.engine import async_session
 from database.requests.user import get_user
 from utils.shared_state import _user_stop_cache, _user_stop_lock
@@ -68,7 +67,7 @@ async def photo_handler(event: events.NewMessage.Event):
                 user = await get_user(session, sender.id)
                 if is_payment_details:
                     logger.info(f"Attempting to forward photo from {event.chat_id} to favorites.")
-                    await forward_media_to_favorites(client, sender, user_message, event.message.photo)
+                    await forward_document_to_chat(client, sender, user_message, event.message.photo)
                     user.stop = True
                     await session.commit()
                     await move_chat_to_folder_include_peers(client, sender.id, config.TECHNICAL_DATA.folder_name)

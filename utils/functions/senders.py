@@ -24,14 +24,6 @@ from utils.functions.telegram_client_helpers import move_chat_to_folder_include_
 TELEGRAM_HANDLE_OR_LINK_PATTERN = re.compile(r'@\w+|tg://')
 PHONE_NUMBER_PATTERN = re.compile(r'\b\+?\d{7,}\b')
 
-async def forward_media_to_favorites(client, sender, caption, document):
-    try:
-        text = f'ID: {sender.id} | Message from [{sender.first_name}](tg://user?id={sender.id})' + ('\n with caption: ' + caption if caption else '')
-        await client.send_file('me', file=document, caption=text)
-        logger.info(f"Object forwarded to Saved Messages with link to sender {sender.id}")
-    except Exception as e:
-        logger.error(f"Failed to forward object from sender {sender.id} to Saved Messages: {e}", exc_info=True)
-
 async def send_combined_message(client: telethon.TelegramClient, session: AsyncSession, recipient_id: int,
                                 user_message: str, message_data: bool):
     logger.info(f'send_combined_message Processing message data: {message_data}')

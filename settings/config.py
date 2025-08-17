@@ -59,6 +59,7 @@ class TechnicalDataConfig:
     folder_name: str
     wait_payment_folder_name: str
     monitoring_chat: str
+    forwarding_chat: str
 
 @dataclass
 class PromptDataConfig:

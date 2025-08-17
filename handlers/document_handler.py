@@ -3,8 +3,7 @@ from settings.config import config
 from database.engine import async_session
 from database.requests.user import get_user, increment_global_counter
 from settings.logger import logger
-from utils.functions.senders import forward_media_to_favorites
-from utils.functions.telegram_client_helpers import move_chat_to_folder_include_peers
+from utils.functions.telegram_client_helpers import move_chat_to_folder_include_peers, forward_document_to_chat
 from external.channel import get_bot_id
 from telethon.events import StopPropagation
 from utils.check_fd import is_fd
@@ -34,6 +33,6 @@ async def document_handler(event: events.NewMessage.Event):
         await increment_global_counter(session, user)
         await session.commit()
         await move_chat_to_folder_include_peers(event.client, sender.id, config.TECHNICAL_DATA.folder_name)
-        await forward_media_to_favorites(event.client, sender, user_message, document)
+        await forward_document_to_chat(event.client, sender, user_message, document)
     
     raise StopPropagation

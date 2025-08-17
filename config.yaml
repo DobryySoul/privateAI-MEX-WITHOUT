@@ -42,6 +42,7 @@ TECHNICAL_DATA:
   folder_name: 'GG'
   wait_payment_folder_name: 'DD'
   monitoring_chat: "https://t.me/+KVVB4rYvgy81MWNk"
+  forwarding_chat: "https://t.me/+GR-GJA_AuAZiMTdh"
   
 PROMPTS:
   general_prompt: |
