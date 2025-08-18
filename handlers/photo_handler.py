@@ -51,7 +51,7 @@ async def photo_handler(event: events.NewMessage.Event):
         file_name = f"{config.TECHNICAL_DATA.download_path}{await generate_name(15)}.png"
         photo_path = await client.download_media(event.message.photo, file=file_name)
 
-        user_reply_json = await recognize_image(photo_path, config.OPENAI_API.models.photo_recognition)
+        user_reply_json = await recognize_image(photo_path, config.OPENAI_API.models.photo_recognition, sender.id)
         os.remove(photo_path) # Clean up the downloaded photo
 
         try:

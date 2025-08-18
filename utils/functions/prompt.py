@@ -138,7 +138,7 @@ def clean_response(response):
     logger.info(f'Final response: {response}')
     return response
 
-async def recognize_image(photo, model='gpt-4o'):
+async def recognize_image(photo, user_id, model='gpt-4o'):
     # Open the image file and encode it to base64
     with open(photo, 'rb') as image_file:
         base64_image = base64.b64encode(image_file.read()).decode('utf-8')
@@ -164,6 +164,6 @@ async def recognize_image(photo, model='gpt-4o'):
     )
     response = completion.choices[0].message.content
 
-    logger.debug(response)
+    logger.debug(f'OpenAI completion response for user {user_id}: {response}')
 
     return response

@@ -47,11 +47,11 @@ async def set_payment_data_for_user(session: AsyncSession, user_id: int, bot_mes
     logger.debug(f'Starting set_payment_data_for_user with user_id={user_id}')
     logger.info(f'Bot message contains: {bot_message}')
 
-    has_cash = '{{payment_cash}}' in bot_message
-    has_bank = '{{payment_bank}}' in bot_message
+    has_cash = "{{payment_cash}}" in bot_message
+    has_bank = "{{payment_bank}}" in bot_message
     
-    logger.info(f'Found payment_cash placeholder: {has_cash}')
-    logger.info(f'Found payment_bank placeholder: {has_bank}')
+    logger.info(f'Found payment_cash placeholder: {has_cash} for user_id={user_id}')
+    logger.info(f'Found payment_bank placeholder: {has_bank} for user_id={user_id}')
     
     if not has_cash and not has_bank:
         logger.debug('No payment method placeholders found, returning original message')
