@@ -50,9 +50,14 @@ async def photo_handler(event: events.NewMessage.Event):
 
         file_name = f"{config.TECHNICAL_DATA.download_path}{await generate_name(15)}.png"
         photo_path = await client.download_media(event.message.photo, file=file_name)
-
-        user_reply_json = await recognize_image(photo_path, config.OPENAI_API.models.photo_recognition, sender.id)
-        os.remove(photo_path) # Clean up the downloaded photo
+        try:
+            user_reply_json = await recognize_image(photo_path, config.OPENAI_API.models.photo_recognition, sender.id)
+        finally:
+            try:
+                if photo_path and os.path.exists(photo_path):
+                    os.remove(photo_path)
+            except Exception as e:
+                logger.error(f"Error removing temporary photo file {photo_path}: {e}")
 
         try:
             user_reply_data = json.loads(user_reply_json)
