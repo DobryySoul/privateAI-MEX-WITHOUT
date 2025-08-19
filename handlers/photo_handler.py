@@ -20,6 +20,8 @@ async def photo_handler(event: events.NewMessage.Event):
     sender = await event.get_sender()
     if sender.bot:
         return
+        
+    user_reply = ""
 
     logger.info(f"New photo from {sender.id}")
 
