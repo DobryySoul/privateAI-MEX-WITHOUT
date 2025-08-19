@@ -52,48 +52,51 @@ async def photo_handler(event: events.NewMessage.Event):
         photo_path = await client.download_media(event.message.photo, file=file_name)
         try:
             user_reply_json = await recognize_image(photo_path, config.OPENAI_API.models.photo_recognition, sender.id)
+            
+            try:
+                user_reply_data = json.loads(user_reply_json)
+                is_payment_details = user_reply_data.get('is_payment_details', False)
+                photo_name = user_reply_data.get('photo_name', 'Unknown')
+                description = user_reply_data.get('description', '')
+            except (json.JSONDecodeError, KeyError) as e:
+                logger.error(f"Error parsing AI response: {e}")
+                return  # Выходим, если не удалось распарсить ответ
+
+            if not from_me: 
+                async with async_session() as session:
+                    user = await get_user(session, sender.id)
+                    if is_payment_details:
+                        logger.info(f"Attempting to forward photo from {event.chat_id} to favorites.")
+                        await forward_document_to_chat(client, sender, user_message, event.message.photo)
+                        user.stop = True
+                        await session.commit()
+                        await move_chat_to_folder_include_peers(client, sender.id, config.TECHNICAL_DATA.folder_name)
+                    else:
+                        if user.stop:
+                            user.stop = False
+                            await session.commit()
+
+            user_reply = f"{user_message} | attached photo: {photo_name} \nAI VISION: '{description}'" if user_message else f"attached photo: {photo_name} \nAI VISION: '{description}'"
+
+        except Exception as e:
+            logger.error(f"Error in photo processing: {e}", exc_info=True)
+            raise
         finally:
+            # Удаляем фотографию в любом случае после обработки
             try:
                 if photo_path and os.path.exists(photo_path):
                     os.remove(photo_path)
             except Exception as e:
                 logger.error(f"Error removing temporary photo file {photo_path}: {e}")
-
-        try:
-            user_reply_data = json.loads(user_reply_json)
-            is_payment_details = user_reply_data.get('is_payment_details', False)
-            photo_name = user_reply_data.get('photo_name', 'Unknown')
-            description = user_reply_data.get('description', '')
-        except (json.JSONDecodeError, KeyError) as e:
-            logger.error(f"Error parsing AI response: {e}")
-
-        if not from_me: 
-            async with async_session() as session:
-                user = await get_user(session, sender.id)
-                if is_payment_details:
-                    logger.info(f"Attempting to forward photo from {event.chat_id} to favorites.")
-                    await forward_document_to_chat(client, sender, user_message, event.message.photo)
-                    user.stop = True
-                    await session.commit()
-                    await move_chat_to_folder_include_peers(client, sender.id, config.TECHNICAL_DATA.folder_name)
-                else:
-                    if user.stop:
-                        user.stop = False
-                        await session.commit()
-
-        user_reply = f"{user_message} | attached photo: {photo_name} \nAI VISION: '{description}'" if user_message else f"attached photo: {photo_name} \nAI VISION: '{description}'"
-
+    
     except Exception as e:
-        logger.error(f"Error in photo_handler: {e}", exc_info=True)
+        logger.error(f"Error in photo handler: {e}", exc_info=True)
     finally:
-        async with _user_stop_lock:
-            _user_stop_cache.pop(sender.id, None)
-
-    async with async_session() as session:
-        user_after_photo_processing = await get_user(session, sender.id)
-        if not user_after_photo_processing.stop:
-            await common_handler(event, user_reply, is_payment_details)
-        else:
-            logger.info(f"User {sender.id} is stopped due to payment. No common_handler call for photo.")
+        async with async_session() as session:
+            user_after_photo_processing = await get_user(session, sender.id)
+            if not user_after_photo_processing.stop:
+                await common_handler(event, user_reply, is_payment_details)
+            else:
+                logger.info(f"User {sender.id} is stopped due to payment. No common_handler call for photo.")
 
     raise StopPropagation
