@@ -62,7 +62,7 @@ async def photo_handler(event: events.NewMessage.Event):
                 description = user_reply_data.get('description', '')
             except (json.JSONDecodeError, KeyError) as e:
                 logger.error(f"Error parsing AI response: {e}")
-                return  # Выходим, если не удалось распарсить ответ
+                return  
 
             if not from_me: 
                 async with async_session() as session:
