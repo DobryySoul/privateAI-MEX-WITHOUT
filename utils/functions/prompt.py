@@ -145,7 +145,7 @@ async def recognize_image(photo, user_id, model='gpt-4o'):
 
     # Create the completion request to OpenAI
     completion = await openai.chat.completions.create(
-        model=model,
+        model="gemini-2.5-flash",
         response_format={"type": "json_object"},
         messages=[
             {
