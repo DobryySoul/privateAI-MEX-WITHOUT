@@ -7,11 +7,14 @@ from handlers import text_handler, photo_handler, document_handler, video_gif_ha
 from tasks.archive_cache import start_archive_cache_update
 from tasks.inactive_users import start_push_notifications
 from tasks.push_reminder import start_30min_push_loop
-
+from handlers.clear_handler import delete_in_favorites_handler, confirm_delete_handler
 
 async def setup_handlers(client):
     """Настройка обработчиков событий"""
     client.add_event_handler(clear_handler, events.NewMessage(pattern=r"/clear"))
+    client.add_event_handler(delete_in_favorites_handler, events.NewMessage(pattern=r"/delete (.+)", from_users='me'))
+    client.add_event_handler(confirm_delete_handler, events.NewMessage(pattern=r"/confirm (.+)", from_users='me'))
+    
     client.add_event_handler(
         voice_handler,
         events.NewMessage(func=lambda e: e.is_private and getattr(e.message, 'voice', None) is not None)
